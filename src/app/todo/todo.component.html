@@ -1,0 +1,104 @@
+<div class="todo-container mat-app-background full-width full-height">
+<img class="todo-container-backgroundImage" alt="background-image"
+[src]="!darkMode ? '../../assets/bg-desktop-light.jpg' : '../../assets/bg-desktop-dark.jpg'"/>
+  <div class="todo-container-center full-height">
+    <div class="todo-header full-width">
+      <span>TODO</span>
+      <button *ngIf="darkMode" (click)="toggleDarkMode()" mat-icon-button aria-label="Switch to light mode" class="icon-darkModeActive" matTooltip="Switch to light mode">
+        <mat-icon>wb_sunny</mat-icon>
+      </button>
+      <button *ngIf="!darkMode" (click)="toggleDarkMode()" mat-icon-button aria-label="Switch to dark mode" class="icon-lightModeActive" matTooltip="Switch to dark mode">
+        <mat-icon>brightness_3</mat-icon>
+      </button>
+      <!-- <img *ngIf="darkMode" (click)="toggleDarkMode()" src="../../assets/icon-sun.svg" alt="Light Mode"/>
+      <img *ngIf="!darkMode" (click)="toggleDarkMode()" src="../../assets/icon-moon.svg" alt="Dark Mode"/> -->
+    </div>
+
+    <div class="todo-body full-width">
+
+      <mat-card class="todo-add full-width" [ngClass]="darkMode ? 'darkMode' : ''">
+        <mat-form-field class="full-width" appearance="outline" >
+          <input matInput [formControl]="todoFC" placeholder="Create a new todo..." maxlength="50"
+          (keyup.enter)="addTask()"/>
+          <mat-hint align="end">{{todoFC.value ? todoFC.value.length : '0'}}/50</mat-hint>
+        </mat-form-field>
+        <button (click)="addTask()" mat-icon-button matTooltip="Add task" aria-label="Add task">
+          <mat-icon class="icon-addTask">add_circle_outline</mat-icon>
+        </button>
+      </mat-card>
+  
+      <mat-card class="todo-list-container full-width">
+        <div cdkDropList class="todo-list full-width" (cdkDropListDropped)="drop($event)"
+        [ngClass]="darkMode ? 'darkMode' : ''">
+          <div *ngIf="!tasks.length" class="todo-list-task todo-list-task--empty"
+          [ngClass]="darkMode ? 'darkMode' : ''">
+            <p>{{ !filters.completed ? 'No tasks added' : 'No tasks completed'}}</p>
+          </div>
+          <div class="todo-list-task full-width" *ngFor="let task of tasks" cdkDrag
+          [ngClass]="darkMode ? 'darkMode' : ''">
+            <mat-icon class="icon icon-drag-handle" matTooltip="Move task" 
+            aria-label="Move task">drag_handle</mat-icon>
+            <mat-icon class="icon icon-incomplete" *ngIf="!task.status" 
+            (click)="toggleComplete(task)" matTooltip="Mark as complete"
+            aria-label="Mark as complete">
+              panorama_fish_eye
+            </mat-icon>
+            <mat-icon class="icon icon-complete" *ngIf="task.status" 
+            (click)="toggleComplete(task)" matTooltip="Mark as incomplete" 
+            aria-label="Mark as incomplete">
+              check_circle
+            </mat-icon>
+            <span class="todo-list-task-name" 
+            [ngClass]="task.status ? 'todo-list-task-name--completed' : ''">
+              {{ deviceWidth < 600 && task.name.length > 18 ? task.name.slice(0,18) + '...' : task.name }}
+            </span>
+            <mat-icon class="icon icon-close" (click)="removeTask(task)" aria-label="Remove task" matTooltip="Remove task">close</mat-icon>
+          </div>
+          <div class="todo-list-task todo-list-task-info full-width" [ngClass]="darkMode ? 'darkMode' : ''">
+            <span>{{ tasks.length }} items left</span>
+  
+            <div class="todo-list-task-info-filters">
+              <span [ngClass]="filters.all ? 'todo-list-task-info-filters--active' : ''"
+              (click)="filterChanged(1)">
+                All
+              </span>
+              <span [ngClass]="filters.active ? 'todo-list-task-info-filters--active' : ''"
+              (click)="filterChanged(2)">
+                Active
+              </span>
+              <span [ngClass]="filters.completed ? 'todo-list-task-info-filters--active' : ''"
+              (click)="filterChanged(3)">
+                Completed
+              </span>
+            </div>
+  
+            <span class="todo-list-task-info-removeCompleted" (click)="removeCompletedTasks()">
+              Clear Completed
+            </span>
+          </div>
+        </div>
+      </mat-card>
+      <mat-card class="full-width todo-list-task todo-list-task-info-filters-mobile" [ngClass]="darkMode ? 'darkMode' : ''">
+        <span [ngClass]="filters.all ? 'todo-list-task-info-filters--active' : ''"
+        (click)="filterChanged(1)">
+          All
+        </span>
+        <span [ngClass]="filters.active ? 'todo-list-task-info-filters--active' : ''"
+        (click)="filterChanged(2)">
+          Active
+        </span>
+        <span [ngClass]="filters.completed ? 'todo-list-task-info-filters--active' : ''"
+        (click)="filterChanged(3)">
+          Completed
+        </span>
+      </mat-card>
+      
+      
+      <div class="todo-hint full-width" 
+      [ngStyle]="{ 'color': !darkMode ? 'hsl(235, 24%, 19%)' : ' hsl(234, 39%, 85%)' }">
+        Drag and drop to reorder list 
+      </div>
+    </div>
+
+  </div>
+</div>
